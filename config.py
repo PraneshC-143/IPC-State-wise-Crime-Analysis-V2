@@ -1,16 +1,29 @@
-# Configuration Settings for Crime Analysis Dashboard
+"""
+Configuration file for CrimeScope Dashboard
+"""
 
-# Database settings
-DATABASE_HOST = 'localhost'
-DATABASE_PORT = 5432
-DATABASE_USER = 'user'
-DATABASE_PASSWORD = 'password'
-DATABASE_NAME = 'crime_analysis'
+# Page Configuration
+PAGE_TITLE = "CrimeScope | IPC Crime Intelligence"
+PAGE_LAYOUT = "wide"
+PAGE_ICON = "📊"
 
-# Dashboard settings
-DASHBOARD_TITLE = 'State-wise Crime Analysis'
-UPDATE_INTERVAL = 60  # in seconds
+# Data Configuration
+DATA_FILE = "districtwise-ipc-crimes.xlsx"
+SHEET_NAME = "districtwise-ipc-crimes"
+COLUMNS_TO_DROP = ["id", "state_code", "district_code"]
 
-# Logging settings
-LOGGING_LEVEL = 'INFO'
-LOGGING_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+# UI Configuration
+PRIMARY_COLOR = "#1f77b4"
+BACKGROUND_COLOR = "#fafafa"
+SIDEBAR_COLOR = "#f9fafb"
+BORDER_COLOR = "#e5e7eb"
+
+# Visualization Configuration
+PLOT_HEIGHT = 400
+KPI_DECIMAL_PLACES = 0
+TOP_DISTRICTS_COUNT = 10
+
+# ML Configuration
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
+N_ESTIMATORS = 100
