@@ -475,7 +475,7 @@ def display_model_metrics(results):
                     'RMSE': metrics['RMSE'],         # Keep as numeric
                     'R² Score': metrics['R²']        # Keep as numeric
                 })
-            except (KeyError, TypeError) as e:
+            except (KeyError, TypeError, ValueError) as e:
                 st.warning(f"Error processing metrics for {model_name}: {str(e)}")
                 continue
         
@@ -488,10 +488,16 @@ def display_model_metrics(results):
         # Style: Lower MAE/RMSE is better (green), Higher R² is better (green)
         def highlight_best(s):
             if s.name == 'MAE' or s.name == 'RMSE':
-                is_min = s == s.min()
+                valid_values = s.dropna()
+                if len(valid_values) == 0:
+                    return ['' for _ in s]
+                is_min = s == valid_values.min()
                 return ['background-color: lightgreen' if v else '' for v in is_min]
             elif s.name == 'R² Score':
-                is_max = s == s.max()
+                valid_values = s.dropna()
+                if len(valid_values) == 0:
+                    return ['' for _ in s]
+                is_max = s == valid_values.max()
                 return ['background-color: lightgreen' if v else '' for v in is_max]
             return ['' for _ in s]
         
