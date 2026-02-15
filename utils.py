@@ -33,7 +33,9 @@ def apply_custom_styling():
 
 def format_number(value):
     """Format a number with thousands separator"""
-    return f'{value:,}'
+    if isinstance(value, (int, float)):
+        return f'{value:,}'
+    return value
 
 
 def get_download_button(data, filename):
@@ -42,14 +44,15 @@ def get_download_button(data, filename):
     st.download_button(
         label='📥 Download CSV',
         data=csv,
-        file_name=filename,
+        file_name=f"{filename}.csv",
         mime='text/csv'
     )
 
 
-def display_kpi_card(title, value):
-    """Display a Key Performance Indicator (KPI) card"""
-    st.metric(label=title, value=format_number(value) if isinstance(value, (int, float)) else value)
+def display_kpi_card(title, value, icon=""):
+    """Display a Key Performance Indicator (KPI) card with optional icon"""
+    formatted_value = format_number(value) if isinstance(value, (int, float)) else value
+    st.metric(label=f"{icon} {title}" if icon else title, value=formatted_value)
 
 
 def display_warning_message(message):
