@@ -503,28 +503,30 @@ def display_model_metrics(results):
         # Clean and convert each numeric column
         for col in required_columns:
             try:
-                # Strip whitespace and convert to numeric
+                # Strip whitespace from string values and convert to numeric
                 # Use errors='coerce' to handle conversion issues gracefully
-                if df_numeric[col].dtype == 'object':
-                    # Clean string values: strip whitespace and special characters
-                    df_numeric[col] = df_numeric[col].astype(str).str.strip()
-                
+                df_numeric[col] = df_numeric[col].str.strip()
                 df_numeric[col] = pd.to_numeric(df_numeric[col], errors='coerce')
                 
                 # Check if conversion resulted in NaN values
-                if df_numeric[col].isna().any():
-                    st.warning(f"Some values in '{col}' could not be converted to numeric. Using original values.")
-                    # Fall back to original values if conversion fails
-                    df_numeric[col] = pd.to_numeric(df[col], errors='coerce')
+                nan_count = df_numeric[col].isna().sum()
+                if nan_count > 0:
+                    st.warning(f"{nan_count} value(s) in '{col}' could not be converted to numeric.")
                     
             except Exception as e:
                 st.error(f"Error converting column '{col}' to numeric: {str(e)}")
                 return None
         
         # Verify we have valid numeric data
-        if df_numeric[required_columns].isna().all().any():
-            st.error("Could not convert metrics to numeric format for display.")
-            return None
+        # Check if all values in any column are NaN or if more than half are NaN
+        for col in required_columns:
+            if df_numeric[col].isna().all():
+                st.error(f"Could not convert any values in '{col}' to numeric format.")
+                return None
+            nan_ratio = df_numeric[col].isna().sum() / len(df_numeric[col])
+            if nan_ratio > 0.5:
+                st.error(f"More than 50% of values in '{col}' could not be converted to numeric format.")
+                return None
         
         # Style: Lower MAE/RMSE is better (green), Higher R² is better (green)
         def highlight_best(s):
