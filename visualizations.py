@@ -6,6 +6,10 @@ import pandas as pd
 
 def plot_top_districts(data, top_n=10):
     """Plot top districts by total crime count"""
+    if 'crime_sum' not in data.columns:
+        st.error("No crime data available")
+        return None
+    
     district_crimes = data.groupby('district_name')['crime_sum'].sum().nlargest(top_n).sort_values()
     
     fig = px.bar(
