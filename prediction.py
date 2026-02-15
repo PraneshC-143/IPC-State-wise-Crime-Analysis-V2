@@ -505,7 +505,8 @@ def display_model_metrics(results):
             try:
                 # Strip whitespace from string values and convert to numeric
                 # Use errors='coerce' to handle conversion issues gracefully
-                df_numeric[col] = df_numeric[col].str.strip()
+                # Ensure values are strings before stripping
+                df_numeric[col] = df_numeric[col].astype(str).str.strip()
                 df_numeric[col] = pd.to_numeric(df_numeric[col], errors='coerce')
                 
                 # Check if conversion resulted in NaN values
@@ -520,10 +521,14 @@ def display_model_metrics(results):
         # Verify we have valid numeric data
         # Check if all values in any column are NaN or if more than half are NaN
         for col in required_columns:
+            col_len = len(df_numeric[col])
+            if col_len == 0:
+                st.error(f"Column '{col}' is empty.")
+                return None
             if df_numeric[col].isna().all():
                 st.error(f"Could not convert any values in '{col}' to numeric format.")
                 return None
-            nan_ratio = df_numeric[col].isna().sum() / len(df_numeric[col])
+            nan_ratio = df_numeric[col].isna().sum() / col_len
             if nan_ratio > 0.5:
                 st.error(f"More than 50% of values in '{col}' could not be converted to numeric format.")
                 return None
