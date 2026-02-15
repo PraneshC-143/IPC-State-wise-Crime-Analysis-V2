@@ -1,32 +1,57 @@
-# prediction.py
-
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import streamlit as st
+import plotly.express as px
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+import warnings
+warnings.filterwarnings('ignore')
 
-# Load dataset
-data = pd.read_csv('dataset.csv')  # Placeholder for the actual dataset
 
-# Preparing the data
-X = data.drop('target', axis=1)  # Features
-Y = data['target']  # Target variable
+def prepare_time_series_data(data):
+    # Your implementation here
+    pass
 
-# Splitting the dataset
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-# Creating and training the model
-model = LinearRegression()
-model.fit(X_train, Y_train)
+def create_features(data):
+    # Your implementation here
+    pass
 
-# Making predictions
-predictions = model.predict(X_test)
 
-# Function to make a single prediction
+def train_prediction_models(X_train, y_train):
+    models = {
+        'Linear Regression': LinearRegression(),
+        'Random Forest': RandomForestRegressor(),
+        'Gradient Boosting': GradientBoostingRegressor()
+    }
+    results = {}
+    for name, model in models.items():
+        model.fit(X_train, y_train)
+        results[name] = model
+    return results
 
-def make_prediction(input_data):
-    input_array = np.array(input_data).reshape(1, -1)
-    return model.predict(input_array)  
 
-# Example usage
-# single_prediction = make_prediction([value1, value2, ...])  # Replace with actual values
+def predict_future(model, X_test):
+    return model.predict(X_test)
+
+
+def plot_prediction_comparison(y_true, y_pred):
+    df = pd.DataFrame({'True': y_true, 'Predicted': y_pred})
+    fig = px.line(df, title='Prediction Comparison')
+    st.plotly_chart(fig)
+
+
+def plot_future_predictions(future_dates, predictions):
+    df = pd.DataFrame({'Date': future_dates, 'Predicted': predictions})
+    fig = px.line(df, x='Date', y='Predicted', title='Future Predictions')
+    st.plotly_chart(fig)
+
+
+def plot_crime_type_forecast(crime_data):
+    # Your implementation here
+    pass
+
+
+def display_model_metrics(metrics):
+    for model_name, metric in metrics.items():
+        st.write(f'{model_name}: {metric}')
