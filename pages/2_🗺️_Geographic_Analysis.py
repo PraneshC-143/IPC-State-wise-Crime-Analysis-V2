@@ -18,6 +18,8 @@ from utils.map_generator import (
 )
 from utils.export_utils import export_to_csv
 from utils import format_number, apply_custom_styling, format_crime_name
+from utils.hotspot_map import create_crime_hotspot_map
+from streamlit_folium import st_folium
 
 # ==================================================
 # PAGE CONFIG
@@ -149,11 +151,12 @@ st.divider()
 # ==================================================
 # MAIN VISUALIZATIONS
 # ==================================================
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🗺️ Choropleth Map",
     "🎯 Treemap",
     "☀️ Sunburst",
-    "📊 State Heatmap"
+    "📊 State Heatmap",
+    "🔥 Crime Hotspot Map"
 ])
 
 with tab1:
@@ -248,6 +251,73 @@ with tab4:
     fig.update_traces(textposition='inside', textinfo='percent+label')
     fig.update_layout(height=400)
     st.plotly_chart(fig, use_container_width=True)
+
+with tab5:
+    st.markdown("### 🔥 Interactive Crime Hotspot Map")
+    st.caption("GPS-style interactive map showing crime hotspots across India")
+    
+    st.markdown("""
+    **Features:**
+    - 🗺️ Zoom and pan like Google Maps
+    - 📍 Click markers for district details
+    - 🔥 Heatmap showing crime intensity
+    - 🎯 Filter by crime type and year
+    """)
+    
+    # Filters
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        selected_crimes_map = st.multiselect(
+            "Select Crime Types",
+            options=crime_columns.tolist(),
+            default=crime_columns[:5].tolist(),
+            key="map_crimes"
+        )
+    
+    with col2:
+        year_min = int(filtered_df['year'].min())
+        year_max = int(filtered_df['year'].max())
+        year_range = st.slider(
+            "Select Year Range",
+            min_value=year_min,
+            max_value=year_max,
+            value=(year_min, year_max),
+            key="map_years"
+        )
+    
+    if selected_crimes_map:
+        with st.spinner("🗺️ Generating interactive map..."):
+            hotspot_map = create_crime_hotspot_map(
+                filtered_df,
+                crime_columns,
+                selected_crimes=selected_crimes_map,
+                year_range=year_range
+            )
+            
+            if hotspot_map:
+                # Display map
+                st_folium(hotspot_map, width=1200, height=600)
+                
+                # Instructions
+                with st.expander("ℹ️ How to use the map"):
+                    st.markdown("""
+                    **Map Controls:**
+                    - 🖱️ **Click and drag** to pan
+                    - 🔍 **Scroll** to zoom in/out
+                    - 📍 **Click markers** for district details
+                    - 🗺️ **Use layer control** (top right) to toggle heatmap/markers
+                    - ⛶ **Click fullscreen** button for better view
+                    - 📏 **Use measure tool** (bottom left) to measure distances
+                    
+                    **Legend:**
+                    - 🔴 **Red markers** = High crime areas
+                    - 🟠 **Orange markers** = Medium crime areas
+                    - 🟢 **Green markers** = Low crime areas
+                    - 🔥 **Heatmap** = Crime density (red = highest)
+                    """)
+    else:
+        st.warning("Please select at least one crime type")
 
 st.divider()
 
