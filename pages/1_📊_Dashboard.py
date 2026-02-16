@@ -19,7 +19,7 @@ from utils.kpi_calculator import (
     calculate_district_kpis
 )
 from utils.export_utils import export_to_csv, create_summary_report
-from utils import format_number, apply_custom_styling
+from utils import format_number, apply_custom_styling, format_crime_name
 from analytics import get_crime_statistics
 from visualizations import plot_top_districts, plot_crime_trend, plot_distribution
 
@@ -92,12 +92,20 @@ with st.sidebar:
     else:
         # Show top 20 crime types for selection
         top_crimes = df[crime_columns].sum().nlargest(20).index.tolist()
-        selected_crimes = st.multiselect(
+        
+        # Create a mapping of formatted names to original names
+        crime_name_mapping = {format_crime_name(crime): crime for crime in top_crimes}
+        formatted_crime_names = list(crime_name_mapping.keys())
+        
+        selected_formatted = st.multiselect(
             "Choose crime types",
-            options=top_crimes,
-            default=top_crimes[:5],
+            options=formatted_crime_names,
+            default=formatted_crime_names[:5],
             help="Select specific crime types to analyze"
         )
+        
+        # Convert back to original crime names
+        selected_crimes = [crime_name_mapping[name] for name in selected_formatted]
     
     if not selected_crimes:
         st.warning("⚠️ Please select at least one crime type")
@@ -261,7 +269,7 @@ with tab3:
         crime_totals = filtered_df[selected_crimes].sum().sort_values(ascending=False).head(10)
         
         crime_df = pd.DataFrame({
-            'Crime Type': crime_totals.index,
+            'Crime Type': [format_crime_name(name) for name in crime_totals.index],
             'Total Cases': crime_totals.values,
             'Percentage': (crime_totals.values / crime_totals.sum() * 100)
         })

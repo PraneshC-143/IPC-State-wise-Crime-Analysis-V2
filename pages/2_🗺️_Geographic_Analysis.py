@@ -17,7 +17,7 @@ from utils.map_generator import (
     create_sunburst
 )
 from utils.export_utils import export_to_csv
-from utils import format_number, apply_custom_styling
+from utils import format_number, apply_custom_styling, format_crime_name
 
 # ==================================================
 # PAGE CONFIG
@@ -76,11 +76,19 @@ with st.sidebar:
         selected_crimes = df[crime_columns].sum().nlargest(top_n).index.tolist()
     else:
         top_crimes = df[crime_columns].sum().nlargest(20).index.tolist()
-        selected_crimes = st.multiselect(
+        
+        # Create a mapping of formatted names to original names
+        crime_name_mapping = {format_crime_name(crime): crime for crime in top_crimes}
+        formatted_crime_names = list(crime_name_mapping.keys())
+        
+        selected_formatted = st.multiselect(
             "Choose crime types",
-            options=top_crimes,
-            default=top_crimes[:5]
+            options=formatted_crime_names,
+            default=formatted_crime_names[:5]
         )
+        
+        # Convert back to original crime names
+        selected_crimes = [crime_name_mapping[name] for name in selected_formatted]
     
     if not selected_crimes:
         selected_crimes = [crime_columns[0]]

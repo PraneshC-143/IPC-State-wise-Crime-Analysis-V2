@@ -12,7 +12,7 @@ import numpy as np
 from data_loader import load_data, validate_data
 from visualizations import plot_correlation_heatmap, plot_heatmap_by_district
 from utils.export_utils import export_to_csv, create_crime_type_summary
-from utils import format_number, apply_custom_styling
+from utils import format_number, apply_custom_styling, format_crime_name
 
 # ==================================================
 # PAGE CONFIG
@@ -151,12 +151,19 @@ if analysis_type == "Crime Type Analysis":
     st.markdown("### Crime Type Trends Over Time")
     
     # Select specific crime types to compare
-    compare_crimes = st.multiselect(
+    # Create a mapping of formatted names to original names
+    crime_name_mapping = {format_crime_name(crime): crime for crime in selected_crimes}
+    formatted_crime_names = list(crime_name_mapping.keys())
+    
+    compare_formatted = st.multiselect(
         "Select crime types to compare trends",
-        options=selected_crimes,
-        default=selected_crimes[:5],
+        options=formatted_crime_names,
+        default=formatted_crime_names[:min(5, len(formatted_crime_names))],
         max_selections=7
     )
+    
+    # Convert back to original crime names
+    compare_crimes = [crime_name_mapping[name] for name in compare_formatted]
     
     if compare_crimes:
         yearly_crime_data = filtered_df.groupby('year')[compare_crimes].sum()
@@ -168,7 +175,7 @@ if analysis_type == "Crime Type Analysis":
                 x=yearly_crime_data.index,
                 y=yearly_crime_data[crime],
                 mode='lines+markers',
-                name=crime,
+                name=format_crime_name(crime),
                 line=dict(width=2),
                 marker=dict(size=8)
             ))

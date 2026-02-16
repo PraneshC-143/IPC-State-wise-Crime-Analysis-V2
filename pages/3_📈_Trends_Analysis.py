@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules
 from data_loader import load_data, validate_data
 from utils.export_utils import export_to_csv, create_yearly_summary
-from utils import format_number, apply_custom_styling
+from utils import format_number, apply_custom_styling, format_crime_name
 
 # ==================================================
 # PAGE CONFIG
@@ -65,12 +65,21 @@ with st.sidebar:
     
     if analysis_mode == "Individual Crime Types":
         top_crimes = df[crime_columns].sum().nlargest(15).index.tolist()
-        selected_crimes = st.multiselect(
+        
+        # Create a mapping of formatted names to original names
+        crime_name_mapping = {format_crime_name(crime): crime for crime in top_crimes}
+        formatted_crime_names = list(crime_name_mapping.keys())
+        
+        selected_formatted = st.multiselect(
             "Select crime types",
-            options=top_crimes,
-            default=top_crimes[:3],
+            options=formatted_crime_names,
+            default=formatted_crime_names[:3],
             max_selections=5
         )
+        
+        # Convert back to original crime names
+        selected_crimes = [crime_name_mapping[name] for name in selected_formatted]
+        
         if not selected_crimes:
             selected_crimes = [top_crimes[0]]
     elif analysis_mode == "Compare Top Crimes":
@@ -238,7 +247,7 @@ with tab1:
                 x=yearly_data.index,
                 y=yearly_data[crime],
                 mode='lines+markers',
-                name=crime,
+                name=format_crime_name(crime),
                 line=dict(width=2),
                 marker=dict(size=8)
             ))

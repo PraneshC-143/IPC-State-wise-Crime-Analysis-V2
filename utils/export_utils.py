@@ -7,6 +7,12 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 import plotly.graph_objects as go
+import sys
+import os
+
+# Add parent directory to path to import utils
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import format_crime_name
 
 
 def export_to_csv(df, filename="crime_data.csv"):
@@ -188,7 +194,7 @@ def create_crime_type_summary(df, crime_columns):
     crime_totals = df[crime_columns].sum().sort_values(ascending=False)
     
     summary = pd.DataFrame({
-        'Crime Type': crime_totals.index,
+        'Crime Type': [format_crime_name(name) for name in crime_totals.index],
         'Total Cases': crime_totals.values,
         'Percentage': (crime_totals.values / crime_totals.sum() * 100).round(2)
     })
