@@ -12,14 +12,11 @@ import os
 def _import_root_utils():
     """Import functions from root utils.py without circular import"""
     utils_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "utils.py")
-    
     if not os.path.exists(utils_path):
         raise ImportError(f"Root utils.py not found at {utils_path}")
-    
     spec = importlib.util.spec_from_file_location("root_utils", utils_path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Cannot load root utils.py from {utils_path}")
-    
     root_utils = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(root_utils)
     return root_utils
