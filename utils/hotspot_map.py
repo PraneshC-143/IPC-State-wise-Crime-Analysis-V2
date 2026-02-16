@@ -114,7 +114,9 @@ def create_crime_hotspot_map(data, crime_columns, selected_crimes=None, year_ran
             icon_name = 'info-sign'
         
         # Get top 3 crimes for this district
-        top_crimes = row[crime_cols].nlargest(3)
+        # Convert to numeric to ensure nlargest works
+        crime_values = pd.to_numeric(row[crime_cols], errors='coerce').fillna(0)
+        top_crimes = crime_values.nlargest(3)
         top_crimes_html = '<br>'.join([
             f"• {crime}: {int(count):,}" 
             for crime, count in top_crimes.items()
