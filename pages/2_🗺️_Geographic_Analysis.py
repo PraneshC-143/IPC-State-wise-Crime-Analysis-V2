@@ -243,7 +243,7 @@ with tab4:
         names=crime_totals.index,
         title='Top 15 Crime Types Distribution',
         hole=0.4,
-        color_discrete_sequence=px.colors.sequential.get(color_scheme, px.colors.sequential.Reds)
+        color_discrete_sequence=getattr(px.colors.sequential, color_scheme, px.colors.sequential.Reds)
     )
     fig.update_traces(textposition='inside', textinfo='percent+label')
     fig.update_layout(height=400)
