@@ -50,6 +50,10 @@ def create_crime_hotspot_map(data, crime_columns, selected_crimes=None, year_ran
     # Calculate total crimes
     district_summary['total_crimes'] = district_summary[crime_cols].sum(axis=1)
     
+    # Convert crime columns to numeric for later processing
+    for col in crime_cols:
+        district_summary[col] = pd.to_numeric(district_summary[col], errors='coerce').fillna(0)
+    
     # Add geocoding
     district_summary = add_coordinates(district_summary)
     
@@ -114,9 +118,7 @@ def create_crime_hotspot_map(data, crime_columns, selected_crimes=None, year_ran
             icon_name = 'info-sign'
         
         # Get top 3 crimes for this district
-        # Convert to numeric to ensure nlargest works
-        crime_values = pd.to_numeric(row[crime_cols], errors='coerce').fillna(0)
-        top_crimes = crime_values.nlargest(3)
+        top_crimes = row[crime_cols].nlargest(3)
         top_crimes_html = '<br>'.join([
             f"• {crime}: {int(count):,}" 
             for crime, count in top_crimes.items()
@@ -145,7 +147,7 @@ def create_crime_hotspot_map(data, crime_columns, selected_crimes=None, year_ran
             location=[row['latitude'], row['longitude']],
             popup=folium.Popup(popup_html, max_width=300),
             tooltip=f"{row['district_name']} - {int(row['total_crimes']):,} crimes",
-            icon=folium.Icon(color=color, icon=icon_name, prefix='fa')
+            icon=folium.Icon(color=color, icon=icon_name, prefix='glyphicon')
         ).add_to(marker_cluster)
     
     # Add layer control
