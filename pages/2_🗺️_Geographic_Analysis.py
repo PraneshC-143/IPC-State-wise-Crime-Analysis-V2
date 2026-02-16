@@ -276,20 +276,28 @@ with tab5:
         )
     
     with col2:
-        year_min = int(filtered_df['year'].min())
-        year_max = int(filtered_df['year'].max())
-        year_range = st.slider(
-            "Select Year Range",
-            min_value=year_min,
-            max_value=year_max,
-            value=(year_min, year_max),
-            key="map_years"
-        )
+        # Use original df for year range to avoid single-year issues
+        year_min = int(df['year'].min())
+        year_max = int(df['year'].max())
+        
+        # Only show slider if we have multiple years
+        if year_min < year_max:
+            year_range = st.slider(
+                "Select Year Range",
+                min_value=year_min,
+                max_value=year_max,
+                value=(year_min, year_max),
+                key="map_years"
+            )
+        else:
+            # Single year scenario - just display it
+            st.info(f"📅 Showing data for year: {year_min}")
+            year_range = (year_min, year_max)
     
     if selected_crimes_map:
         with st.spinner("🗺️ Generating interactive map..."):
             hotspot_map = create_crime_hotspot_map(
-                filtered_df,
+                df,  # Use full dataset, not filtered_df
                 crime_columns,
                 selected_crimes=selected_crimes_map,
                 year_range=year_range
