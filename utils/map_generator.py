@@ -6,6 +6,12 @@ Creates geographic visualizations for crime analysis
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import sys
+import os
+
+# Add parent directory to path to import utils
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import format_crime_name
 
 
 # Indian state codes mapping (ISO 3166-2:IN)
@@ -165,6 +171,9 @@ def create_state_heatmap(df, crime_columns, top_n=20):
     # Select top crime types for better visualization
     top_crimes = top_states.sum().nlargest(15)
     heatmap_data = top_states[top_crimes.index]
+    
+    # Format crime names for display
+    heatmap_data.columns = [format_crime_name(col) for col in heatmap_data.columns]
     
     fig = px.imshow(
         heatmap_data,
