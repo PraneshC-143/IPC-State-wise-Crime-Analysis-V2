@@ -1,30 +1,79 @@
-# IPC State-wise Crime Analysis V2
+# 📊 CrimeScope - Professional Crime Intelligence Dashboard
 
-## Introduction
-This repository contains the upgraded crime analysis dashboard, which provides an interactive platform for analyzing crime data across different states in India. The dashboard utilizes the latest technologies to offer insightful data visualization and reporting features with **54 years of historical data (1969-2023)**.
+![Landing Page](https://github.com/user-attachments/assets/4c525593-e32b-4383-81e0-9a9e22460d04)
 
-## Features
-- **State-wise Crime Data Visualization**: Users can view crime data for each state, allowing for comparative analysis.
-- **Historical Data Integration**: Analyze crime trends from 1969 to 2023 (54 years of data)
-- **Interactive Charts**: The dashboard includes interactive charts that enable users to filter and customize their views of the data.
-- **ML-Powered Predictions**: Train models on 50+ years of data for accurate crime forecasting
-- **Data Sources**: Comprehensive listings of data sources used for analytics, including links to datasets and documentation.
-- **User-Friendly Interface**: A simple and straightforward user interface designed for ease of use.
+## 🎯 Overview
 
-## Data Coverage
+**CrimeScope** is a professional, enterprise-level analytics platform for comprehensive crime analysis across India. Built with Streamlit and powered by advanced machine learning, it provides interactive visualizations, predictive analytics, and detailed insights into district-wise IPC crimes.
 
-### Current Data (Built-in)
-- **Years**: 2017-2022
-- **Source**: District-wise IPC crimes Excel file
-- **Records**: ~5,322 district-level entries
+This platform transforms raw crime data into actionable intelligence through:
+- **Multi-page professional dashboard** with intuitive navigation
+- **Interactive KPI cards** with year-over-year comparisons
+- **Geographic visualizations** including choropleth maps and treemaps
+- **Advanced trend analysis** with growth rates and moving averages
+- **Deep dive analytics** with correlation matrices and comparisons
+- **ML-powered predictions** using ensemble models (Linear Regression, Random Forest, Gradient Boosting)
 
-### Historical Data (Optional)
-- **Years**: 1969-2016 (48 years)
-- **Source**: [CrimeDataset by avinashladdha](https://github.com/avinashladdha/CrimeDataset)
-- **Coverage**: State and district-wise IPC and SLL crimes
-- **Total Coverage**: 1969-2023 (54 years when combined)
+---
 
-## Installation
+## ✨ Key Features
+
+### 🏠 **Landing Page**
+- Executive summary with 5 key KPI cards
+- Visual trend overview charts
+- Quick insights and state rankings
+- Data coverage statistics
+- Navigation guide to all sections
+
+### 📊 **Dashboard** (Page 1)
+- Comprehensive analytics overview
+- Interactive filters (states, districts, years, crime types)
+- Real-time KPI calculations
+- Multiple visualization tabs:
+  - Trends Analysis
+  - District Rankings
+  - Crime Distribution
+  - Detailed Statistics
+- CSV export functionality
+
+### 🗺️ **Geographic Analysis** (Page 2)
+- **Choropleth maps** showing crime distribution by state
+- **Treemap** and **Sunburst** charts for hierarchical visualization
+- **State-Crime Type Heatmaps**
+- Top districts analysis
+- Regional comparisons
+- State-level and district-level data exports
+
+### 📈 **Trends Analysis** (Page 3)
+- Time series visualizations with trend lines
+- **Year-over-Year (YoY) comparisons**
+- **Growth rate analysis** including CAGR
+- **Moving averages** for smoothing trends
+- Peak and low annotations
+- Distribution analysis with box plots
+- Statistical summaries
+
+### 🔍 **Deep Dive Analysis** (Page 4)
+Four analysis modes:
+1. **Crime Type Analysis**: Detailed breakdowns with rankings
+2. **State Comparison**: Multi-state analytics with heatmaps
+3. **District Comparison**: Top districts across states
+4. **Correlation Analysis**: Crime type relationships and patterns
+
+### 🤖 **Predictions & Forecasting** (Page 5)
+- **Three ML models** trained and compared:
+  - Linear Regression
+  - Random Forest Regressor
+  - Gradient Boosting Regressor
+- **Ensemble predictions** for robust forecasts
+- Model performance metrics (MAE, RMSE, R²)
+- Future forecasts (1-10 years ahead)
+- Individual crime type forecasts
+- Confidence intervals and trend indicators
+
+---
+
+## 🚀 Installation
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -51,202 +100,306 @@ streamlit run streamlit_app.py
 4. **Access the dashboard**
 Open your web browser and navigate to `http://localhost:8501`
 
-## Historical Data Integration
+---
 
-### Quick Start
+## 📦 Dependencies
 
-To integrate historical crime data from 1969-2016, follow these steps:
+The dashboard uses the following key packages:
+- **streamlit** >= 1.28.0 - Web application framework
+- **pandas** >= 2.0.0 - Data manipulation
+- **plotly** >= 5.14.0 - Interactive visualizations
+- **scikit-learn** >= 1.3.0 - Machine learning models
+- **numpy** >= 1.24.0 - Numerical computing
+- **folium** >= 0.14.0 - Geographic maps
+- **geopy** >= 2.3.0 - Geocoding
 
-#### Step 1: Download the CrimeDataset
+*See `requirements.txt` for complete list*
 
-Download and extract the CrimeDataset repository:
-```bash
-# Clone the CrimeDataset repository
-git clone https://github.com/avinashladdha/CrimeDataset.git
-```
+---
 
-Or download the ZIP file manually from: https://github.com/avinashladdha/CrimeDataset
+## 📊 Data Coverage
 
-#### Step 2: Run the Data Fetcher Script
+### Built-in Dataset
+- **Years**: 2017-2022 (6 years)
+- **Source**: District-wise IPC crimes Excel file
+- **Records**: 5,322 district-level entries
+- **States**: 36 states and union territories
+- **Districts**: 749 districts
+- **Crime Types**: 117 IPC crime categories
 
-Process and combine historical data with current data:
+### Data Structure
+Each record contains:
+- State name
+- District name
+- Year
+- 117 specific IPC crime categories (murder, theft, robbery, etc.)
+- Aggregated totals
 
-```bash
-python scripts/fetch_historical_data.py --local-path /path/to/CrimeDataset
-```
+---
 
-**Options:**
-- `--local-path`: Path to the downloaded CrimeDataset folder (required)
-- `--output`: Custom output file path (default: historical-crime-data-complete.csv)
-- `--start-year`: Starting year for processing (default: 1969)
-- `--end-year`: Ending year for processing (default: 2016)
-- `--no-merge`: Save historical data separately without merging
+## 🎨 Dashboard Pages
 
-**Example:**
-```bash
-# Process all years and merge with current data
-python scripts/fetch_historical_data.py --local-path ~/Downloads/CrimeDataset
+### Navigation
+The dashboard features a multi-page architecture accessible via the sidebar:
 
-# Process specific year range
-python scripts/fetch_historical_data.py --local-path ~/Downloads/CrimeDataset --start-year 1990 --end-year 2016
+1. **🏠 streamlit app** - Landing page with executive summary
+2. **📊 Dashboard** - Comprehensive analytics with filters
+3. **🗺️ Geographic Analysis** - Maps and regional insights
+4. **📈 Trends Analysis** - Time series and growth analysis
+5. **🔍 Deep Dive** - Detailed breakdowns and comparisons
+6. **🤖 Predictions** - ML-based forecasting
 
-# Save without merging
-python scripts/fetch_historical_data.py --local-path ~/Downloads/CrimeDataset --no-merge --output historical-only.csv
-```
+### Interactive Filters
 
-#### Step 3: Verify Integration
+All pages support powerful filtering:
+- **States**: Multi-select dropdown
+- **Districts**: Dependent on selected states
+- **Year Range**: Slider with min/max years
+- **Crime Types**: Select all or choose specific types
+- **Quick Actions**: Reset filters button
 
-After running the script, you should see a new file `historical-crime-data-complete.csv` in the root directory. Restart the Streamlit app to load the combined dataset:
+---
 
-```bash
-streamlit run streamlit_app.py
-```
+## 🤖 Machine Learning & Predictions
 
-The dashboard will automatically detect and load the historical data, showing year range from 1969-2023.
+### Models Used
 
-### Data Processing Details
+The prediction system employs three complementary models:
 
-The `fetch_historical_data.py` script performs the following operations:
+1. **Linear Regression**
+   - Best for: Linear trends
+   - Advantages: Fast, interpretable
+   - Use case: Baseline predictions
 
-1. **Reads year folders** (1969.0 to 2016.0) from CrimeDataset
-2. **Processes CSV files** in each year folder
-3. **Standardizes column names** to match current schema
-4. **Combines all years** into a single dataframe
-5. **Merges with current data** (2017-2022) from districtwise-ipc-crimes.xlsx
-6. **Exports combined data** as CSV for faster loading
+2. **Random Forest Regressor**
+   - Best for: Non-linear patterns
+   - Advantages: Robust to outliers
+   - Use case: Complex relationships
 
-### Configuration
+3. **Gradient Boosting Regressor**
+   - Best for: High accuracy
+   - Advantages: Adaptive learning
+   - Use case: Optimal performance
 
-Historical data integration can be configured in `config.py`:
+### Features Engineering
+- Normalized year values
+- Lag features (previous 1-2 years)
+- Rolling mean trends (3-year window)
+- Historical patterns
 
-```python
-# Historical Data Configuration
-HISTORICAL_DATA_ENABLED = True  # Enable/disable historical data
-HISTORICAL_DATA_FILE = "historical-crime-data-complete.csv"  # Output filename
-CRIME_DATASET_REPO = "https://raw.githubusercontent.com/avinashladdha/CrimeDataset/master"
-MIN_YEAR = 1969  # Minimum year supported
-MAX_YEAR = 2023  # Maximum year supported
-```
+### Ensemble Approach
+The final forecast combines all three models using weighted averaging for robust predictions with reduced variance.
 
-## Data Schema
+### Performance Metrics
+- **MAE** (Mean Absolute Error): Average prediction error
+- **RMSE** (Root Mean Squared Error): Penalizes large errors
+- **R² Score** (0-1): Variance explained by model
 
-### Required Columns
-- `state_name`: Name of the state
-- `district_name`: Name of the district
-- `year`: Year of the crime data
+---
 
-### Crime Columns
-The dataset includes various IPC crime types such as:
-- Murder, Rape, Kidnapping, Robbery, Theft
-- Dowry deaths, Assault on women
-- Riots, Dacoity, Burglary
-- And many more...
+## 📈 Key Performance Indicators (KPIs)
 
-Missing crime columns are automatically filled with 0 values.
+The dashboard calculates and displays:
 
-## Usage
+1. **Total Crimes**: Absolute count with YoY change percentage
+2. **Crime Rate**: Estimated per 100K population
+3. **Most Affected State**: State with highest crime count
+4. **Highest Crime Type**: Most prevalent crime category
+5. **YoY Growth Rate**: Average annual growth rate
+6. **Top 5 States**: Ranking by total crimes
 
-### Basic Navigation
+Each KPI includes:
+- 🟢 Green indicator for decreasing trends
+- 🔴 Red indicator for increasing trends
+- 🟡 Yellow indicator for stable trends
 
-1. **Select State**: Choose a state from the sidebar
-2. **Select District**: Choose a specific district or "All Districts"
-3. **Select Year Range**: Use the slider to select years (1969-2023 with historical data)
-4. **Choose Crime Types**: Select specific crime types to analyze
-5. **View Analytics**: Explore trends, predictions, and insights
+---
 
-### Features Available
+## 📥 Data Export
 
-- **Crime Trends**: View time-series trends for selected crimes
-- **Top Districts**: See districts with highest crime rates
-- **Heatmaps**: Visualize crime patterns across geography
-- **Predictions**: ML-based forecasts for future crime rates
-- **Statistics**: Comprehensive statistical analysis
-- **Data Export**: Download filtered data for further analysis
+Export capabilities available across all pages:
+- **CSV Export**: Filtered data, summaries, forecasts
+- **Chart Export**: PNG format (via Plotly toolbar)
+- **Summary Reports**: Key statistics and metrics
+- **Yearly Aggregates**: Time series data
+- **State/District Summaries**: Regional breakdowns
 
-## Attribution
+---
 
-This project uses crime data from multiple sources:
+## 🎨 Design & Styling
 
-### Primary Data Source
-- **Current Data (2017-2022)**: Built-in district-wise IPC crimes dataset
+### Color Scheme
+- **Primary**: #1f77b4 (Blue)
+- **Secondary**: #f0f2f6 (Light Gray)
+- **Success**: Green shades
+- **Warning**: Red/Orange shades
+- **Background**: #ffffff (White)
 
-### Historical Data Source
-- **Historical Data (1969-2016)**: [CrimeDataset by avinashladdha](https://github.com/avinashladdha/CrimeDataset)
-  - Source: Government of India Open Data
-  - License: As per source repository
-  - Special thanks to @avinashladdha for compiling and organizing the historical dataset
+### UI Features
+- Responsive layout (wide mode)
+- Professional card design with shadows
+- Consistent typography
+- Interactive tooltips and help icons
+- Smooth animations and transitions
 
-## Technical Stack
+---
 
-- **Frontend**: Streamlit
-- **Data Processing**: Pandas, NumPy
-- **Visualization**: Plotly, Matplotlib, Seaborn
-- **Machine Learning**: Scikit-learn
-- **Data Format**: Excel (XLSX), CSV
-
-## Project Structure
+## 🛠️ Project Structure
 
 ```
 IPC-State-wise-Crime-Analysis-V2/
-├── streamlit_app.py              # Main Streamlit application
-├── data_loader.py                # Data loading and preprocessing
+├── streamlit_app.py              # Main landing page
+├── pages/                         # Multi-page dashboard
+│   ├── 1_📊_Dashboard.py         # Comprehensive analytics
+│   ├── 2_🗺️_Geographic_Analysis.py  # Maps and regions
+│   ├── 3_📈_Trends_Analysis.py   # Time series analysis
+│   ├── 4_🔍_Deep_Dive.py         # Detailed breakdowns
+│   └── 5_🤖_Predictions.py       # ML forecasting
+├── utils/                         # Utility modules
+│   ├── __init__.py
+│   ├── kpi_calculator.py         # KPI calculations
+│   ├── map_generator.py          # Geographic visualizations
+│   └── export_utils.py           # Export functionality
+├── data_loader.py                # Data loading and filtering
+├── analytics.py                  # Statistical analysis
+├── visualizations.py             # Chart generation
+├── prediction.py                 # ML models and predictions
 ├── config.py                     # Configuration settings
-├── analytics.py                  # Statistical analysis functions
-├── visualizations.py             # Plotting and charting functions
-├── prediction.py                 # ML prediction models
-├── utils.py                      # Utility functions
+├── .streamlit/
+│   └── config.toml               # Streamlit theme config
 ├── requirements.txt              # Python dependencies
-├── districtwise-ipc-crimes.xlsx  # Current data (2017-2022)
-├── historical-crime-data-complete.csv  # Combined data (1969-2023) [Generated]
-├── scripts/
-│   └── fetch_historical_data.py  # Historical data fetcher script
-└── README.md                     # This file
+├── districtwise-ipc-crimes.xlsx  # Main dataset
+└── README.md                     # Documentation
 ```
 
-## Troubleshooting
+---
 
-### Historical Data Not Loading
+## 💡 Usage Guide
 
-If historical data is not loading:
+### Getting Started
 
-1. Check if `historical-crime-data-complete.csv` exists in the root directory
-2. Verify `HISTORICAL_DATA_ENABLED = True` in `config.py`
-3. Ensure the CSV file is not corrupted (check file size > 0)
-4. Clear Streamlit cache: `streamlit cache clear`
+1. **Launch the app** and explore the landing page
+2. **Navigate** using the sidebar to different analysis pages
+3. **Apply filters** in the sidebar to customize your view
+4. **Interact** with charts by hovering, clicking, and zooming
+5. **Export data** using the download buttons
+6. **Generate predictions** on the Predictions page
 
-### Data Fetcher Script Errors
+### Tips
 
-If the fetcher script fails:
-
-1. Verify the CrimeDataset path is correct
-2. Check that year folders (e.g., `1969.0/`) exist in CrimeDataset
-3. Ensure CSV files are present in year folders
-4. Check Python version (3.8+ required)
-
-### Performance Issues
-
-For better performance with large datasets:
-
-1. Use CSV format instead of Excel (faster loading)
-2. Enable caching in Streamlit (already configured)
-3. Filter data by year range to reduce memory usage
-4. Consider processing a subset of years if full range is not needed
-
-## Contribution
-We welcome contributions to the project! Please check out the CONTRIBUTING.md for guidelines to get started.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-- Special thanks to the data science community for providing invaluable datasets and tools that have made this project possible.
-- Acknowledgment to @avinashladdha for the [CrimeDataset](https://github.com/avinashladdha/CrimeDataset) repository.
-- Thanks to contributors who have worked tirelessly to enhance the functionality of the dashboard.
-- Data sourced from Government of India Open Data platform.
-
-## Contact
-For any inquiries or feedback, please reach out to the project maintainer.
+- 💡 **Hover over metrics** to see detailed explanations
+- 💡 **Use multi-select** to compare multiple states
+- 💡 **Try different time ranges** to spot trends
+- 💡 **Explore all tabs** within each page for comprehensive insights
+- 💡 **Download charts** using the Plotly camera icon
+- 💡 **Reset filters** anytime using the Reset button
 
 ---
-**Version**: 2.0  
-**Last Updated**: 2026-02-16
+
+## 🔬 Advanced Features
+
+### Correlation Analysis
+- Discover relationships between crime types
+- Identify positive and negative correlations
+- Visual correlation matrices with color coding
+
+### Seasonality Detection
+- Identify patterns across years
+- Spot recurring trends
+- Analyze cyclical behaviors
+
+### Comparative Analysis
+- State vs State comparisons
+- District rankings
+- Crime type distributions
+- Year-over-year changes
+
+### Statistical Summaries
+- Descriptive statistics (mean, median, std dev)
+- Distribution analysis
+- Outlier detection
+- Confidence intervals
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+---
+
+## 📝 License
+
+This project is open source and available for educational and research purposes.
+
+---
+
+## 👥 Authors
+
+- **Pranesh C** - Initial work and dashboard development
+- Contributors - See GitHub contributors list
+
+---
+
+## 🙏 Acknowledgments
+
+- **Indian Crime Data**: District-wise IPC crimes dataset
+- **Streamlit**: For the excellent web framework
+- **Plotly**: For interactive visualizations
+- **scikit-learn**: For machine learning capabilities
+- **Open Source Community**: For various libraries and tools
+
+---
+
+## 📞 Support
+
+For questions, issues, or suggestions:
+- Open an issue on GitHub
+- Contact the maintainers
+- Check the documentation
+
+---
+
+## 🔄 Updates & Changelog
+
+### Version 2.0 (Current)
+- ✅ Multi-page professional dashboard architecture
+- ✅ 5 specialized analysis pages
+- ✅ Advanced KPI calculations with YoY comparisons
+- ✅ Geographic visualizations (maps, treemaps, sunburst)
+- ✅ Comprehensive trend analysis with growth rates
+- ✅ Deep dive analytics with correlations
+- ✅ Enhanced ML predictions with 3 ensemble models
+- ✅ Professional styling and responsive design
+- ✅ Data export capabilities
+- ✅ Interactive filters across all pages
+
+### Version 1.0
+- Basic single-page dashboard
+- Simple visualizations
+- Basic predictions
+- Limited filtering options
+
+---
+
+## 🎯 Future Enhancements
+
+Planned features for future releases:
+- [ ] Real-time data integration
+- [ ] Advanced forecasting models (ARIMA, Prophet)
+- [ ] User authentication and role-based access
+- [ ] Custom report generation (PDF)
+- [ ] Alert system for anomaly detection
+- [ ] Mobile-responsive design improvements
+- [ ] API endpoints for data access
+- [ ] Integration with external crime databases
+
+---
+
+**Built with ❤️ using Streamlit | Powered by Python & Machine Learning**
+
+*Last Updated: February 2026*
