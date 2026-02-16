@@ -18,7 +18,7 @@ from prediction import (
     display_model_metrics
 )
 from utils.export_utils import export_to_csv
-from utils import format_number, apply_custom_styling
+from utils import format_number, apply_custom_styling, format_crime_name
 
 # ==================================================
 # PAGE CONFIG
@@ -90,11 +90,19 @@ with st.sidebar:
         crime_types = list(crime_columns)
     else:
         top_crimes = df[crime_columns].sum().nlargest(15).index.tolist()
-        crime_types = st.multiselect(
+        
+        # Create a mapping of formatted names to original names
+        crime_name_mapping = {format_crime_name(crime): crime for crime in top_crimes}
+        formatted_crime_names = list(crime_name_mapping.keys())
+        
+        selected_formatted = st.multiselect(
             "Select crime types",
-            top_crimes,
-            default=top_crimes[:5]
+            formatted_crime_names,
+            default=formatted_crime_names[:5]
         )
+        
+        # Convert back to original crime names
+        crime_types = [crime_name_mapping[name] for name in selected_formatted]
     
     if not crime_types:
         crime_types = [crime_columns[0]]
