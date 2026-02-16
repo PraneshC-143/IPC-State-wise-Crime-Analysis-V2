@@ -3,26 +3,34 @@ Utils Package
 Utility modules for crime analysis dashboard
 """
 
-# Import utility functions from parent utils.py module
+# Import utility functions from parent utils.py module using proper relative imports
+# to avoid circular import issues
+import importlib.util
 import sys
 import os
 
-# Add parent directory to path
-parent_dir = os.path.dirname(os.path.dirname(__file__))
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+def _import_root_utils():
+    """Import functions from root utils.py without circular import"""
+    utils_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "utils.py")
+    if not os.path.exists(utils_path):
+        raise ImportError(f"Root utils.py not found at {utils_path}")
+    spec = importlib.util.spec_from_file_location("root_utils", utils_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load root utils.py from {utils_path}")
+    root_utils = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(root_utils)
+    return root_utils
 
-# Import from root utils.py
-import utils as root_utils
-
-apply_custom_styling = root_utils.apply_custom_styling
-format_number = root_utils.format_number
-get_download_button = root_utils.get_download_button
-display_kpi_card = root_utils.display_kpi_card
-display_warning_message = root_utils.display_warning_message
-display_info_message = root_utils.display_info_message
-display_success_message = root_utils.display_success_message
-display_error_message = root_utils.display_error_message
+# Import functions from root utils.py
+_root_utils_module = _import_root_utils()
+apply_custom_styling = _root_utils_module.apply_custom_styling
+format_number = _root_utils_module.format_number
+get_download_button = _root_utils_module.get_download_button
+display_kpi_card = _root_utils_module.display_kpi_card
+display_warning_message = _root_utils_module.display_warning_message
+display_info_message = _root_utils_module.display_info_message
+display_success_message = _root_utils_module.display_success_message
+display_error_message = _root_utils_module.display_error_message
 
 from .kpi_calculator import (
     calculate_total_crimes,
