@@ -10,25 +10,35 @@ import sys
 import os
 
 def _import_root_utils():
-    """Import functions from root utils.py without circular import"""
-    spec = importlib.util.spec_from_file_location(
-        "root_utils", 
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "utils.py")
-    )
+    """
+    Import functions from root utils.py without circular import.
+    
+    This uses importlib to directly load the root utils.py file,
+    which is at the same level as the utils/ package directory.
+    Expected structure:
+        project_root/
+            utils.py          <- root utils module
+            utils/            <- utils package
+                __init__.py   <- this file
+    """
+    utils_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "utils.py")
+    spec = importlib.util.spec_from_file_location("root_utils", utils_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load root utils.py from {utils_path}")
     root_utils = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(root_utils)
     return root_utils
 
 # Import functions from root utils.py
-_root = _import_root_utils()
-apply_custom_styling = _root.apply_custom_styling
-format_number = _root.format_number
-get_download_button = _root.get_download_button
-display_kpi_card = _root.display_kpi_card
-display_warning_message = _root.display_warning_message
-display_info_message = _root.display_info_message
-display_success_message = _root.display_success_message
-display_error_message = _root.display_error_message
+_root_utils_module = _import_root_utils()
+apply_custom_styling = _root_utils_module.apply_custom_styling
+format_number = _root_utils_module.format_number
+get_download_button = _root_utils_module.get_download_button
+display_kpi_card = _root_utils_module.display_kpi_card
+display_warning_message = _root_utils_module.display_warning_message
+display_info_message = _root_utils_module.display_info_message
+display_success_message = _root_utils_module.display_success_message
+display_error_message = _root_utils_module.display_error_message
 
 from .kpi_calculator import (
     calculate_total_crimes,
