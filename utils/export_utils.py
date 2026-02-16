@@ -7,12 +7,61 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 import plotly.graph_objects as go
-import sys
-import os
 
-# Add parent directory to path to import utils
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils import format_crime_name
+
+def _format_crime_name(crime_name):
+    """
+    Local copy of format_crime_name to avoid circular imports.
+    Convert database crime names to human-readable format.
+    """
+    if not crime_name or not isinstance(crime_name, str):
+        return crime_name
+    
+    import re
+    
+    # Remove IPC section references
+    cleaned = re.sub(r'_section_\d+(_to_\d+)?_ipc', '', crime_name)
+    
+    # Split by underscore and replace abbreviations
+    parts = cleaned.split('_')
+    
+    # Abbreviation mapping
+    abbreviation_map = {
+        'clpbl': 'culpable', 'hmcrd': 'homicide', 'amt': 'amounting',
+        'acdnt': 'accident', 'negnc': 'negligence', 'negl': 'negligence',
+        'neg': 'negligence', 'rel': 'related', 'rail': 'railway',
+        'med': 'medical', 'atmpt': 'attempt', 'cmmt': 'commit',
+        'clpb': 'culpable', 'miscarr': 'miscarriage', 'foetic': 'foetal',
+        'aband': 'abandonment', 'vlntrly': 'voluntarily', 'caus': 'causing',
+        'pub': 'public', 'srvnt': 'servant', 'hrt': 'hurt',
+        'endgrng': 'endangering', 'lf': 'life', 'grvus': 'grievous',
+        'wepn': 'weapon', 'sex': 'sexual', 'hrrsmt': 'harassment',
+        'prms': 'premises', 'trnsprt': 'transport', 'sys': 'system',
+        'frgn': 'foreign', 'cntry': 'country', 'kidnp': 'kidnapping',
+        'abduc': 'abduction', 'ofnc': 'offence', 'agnst': 'against',
+        'trnqul': 'tranquility', 'elec': 'election', 'pwr': 'power',
+        'disp': 'dispute', 'polc': 'police', 'prsnl': 'personnel',
+        'gvt': 'government', 'impt': 'import', 'asrtns': 'assertions',
+        'prjudc': 'prejudice', 'intgrtn': 'integration', 'mkng': 'making',
+        'prprtn': 'preparation', 'assmbly': 'assembly', 'cmmttng': 'committing',
+        'dcty': 'dacoity', 'dsh': 'dishonestly', 'hon': 'honest',
+        'rec': 'receiving', 'deal': 'dealing', 'stl': 'stolen',
+        'prop': 'property', 'cntrft': 'counterfeit', 'curr': 'currency',
+        'disbnc': 'disobedience', 'ordr': 'order', 'prmlgtd': 'promulgated',
+        'pblc': 'public', 'rsh': 'rash', 'nglgnt': 'negligent',
+        'drvng': 'driving', 'wy': 'way', 'csng': 'causing',
+        'crcl': 'circulating', 'sec': 'section',
+    }
+    
+    replaced_parts = [abbreviation_map.get(part.lower(), part) for part in parts if part]
+    cleaned = ' '.join(replaced_parts)
+    cleaned = cleaned.title()
+    
+    # Handle special cases
+    for old, new in {'Ipc': 'IPC', 'Sc': 'SC', 'St': 'ST', 'Ndps': 'NDPS', 'It': 'IT', 'Crpc': 'CrPC'}.items():
+        cleaned = cleaned.replace(old, new)
+    
+    return cleaned.strip()
 
 
 def export_to_csv(df, filename="crime_data.csv"):
@@ -194,7 +243,7 @@ def create_crime_type_summary(df, crime_columns):
     crime_totals = df[crime_columns].sum().sort_values(ascending=False)
     
     summary = pd.DataFrame({
-        'Crime Type': [format_crime_name(name) for name in crime_totals.index],
+        'Crime Type': [_format_crime_name(name) for name in crime_totals.index],
         'Total Cases': crime_totals.values,
         'Percentage': (crime_totals.values / crime_totals.sum() * 100).round(2)
     })
